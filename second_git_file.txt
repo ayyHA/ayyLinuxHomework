@@ -1,2 +1,6 @@
 This is my second time to use git,not bad~
-		written by ayy,2020-09-27
+		written by ayy, 2020-09-27
+This is the second text to cooperate my first text in order to finish my test
+		written by ayy, 2020-10-05
+
+Creating a new branch is quick AND simple.
