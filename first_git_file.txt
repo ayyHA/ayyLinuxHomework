@@ -1,2 +1,7 @@
 This is my first time to use git_repository
 		written by ayy, 2020-09-27
+This is a test for my note 
+		written by ayy, 2020-10-05
+=============
+This is a sentence written by ayy in branch dev 
+                                2020-10-06
