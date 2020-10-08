@@ -48,18 +48,20 @@ e.g.: strip 1-2
 
   pgrep指令: 查找进程
   
-  strace指令:
+  strace指令: 是一个用户空间跟踪器，可以用来监控用户空间进程和内核的交互(如系统调用、信号传递、进程状态变更等)。底层通过内核的ptrace实现
+              运行模式: 1. strace 运行的指令(通过strace启动要跟踪的进程)	   
+			2. strace -p PID(跟踪已经在进行的进程),而进程号可以通过指令: pidof 文件名 来查看,可以通过ctrl+c终止strace
 
-  echo指令: 
+  echo指令: 与bash的甚是相似，可向标准输出输出内容
 
   sleep 300 | sleep 400& 
             |	       |
 	    v	       v
  	 管道符号 后台执行，让出终端
 
-  file decription: |0 stdin
-		   |1 stdout
-		   |2 stderr
+  file description: |0 stdin
+		    |1 stdout
+		    |2 stderr
 
   进程通过匿名管道文件进行通信，可通过ls -l /proc/进程/fd 查看管道详情
 
