@@ -7,6 +7,7 @@ int main(){
 		int fd = creat(name,0644);
 		sleep(10);
 		cnt++;
+		close(fd);
 	}
 	return 0;
 }
