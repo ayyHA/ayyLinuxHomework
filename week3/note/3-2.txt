@@ -1,0 +1,15 @@
+打开和关闭流：
+  fopen函数：
+函数原型: FILE* fopen(const char* pathname,const char* opentype);
+函数说明: 打开pathname文件并创建一个与之相连的流，opentype则控制文件打开的方式: 	|"r": 表示读已存在的文件，定位于文件开始
+	|"w": 表示写文件，无则创有则截断为0，即重写
+	|"a": 无则创，有则添加内容于末尾
+	|带个"+"号，即为读写
+
+  fclose函数：
+函数原型: int fclose(FILE* stream);
+函数说明: 关闭参数stream指定的流，中断与对应文件的连接且在流关闭前，所有缓冲输出将被写出。调用成功返回0，否则返回EOF并置errno指出错误
+
+  freopen函数：
+函数原型: FILE* freopen(const char* pathname, const char* opentype, FILE* stream);
+函数说明: 重新打开pathname指定的文件。若stream指定的流是打开的，则先关闭该流，忽略全部的错误，以opentype的方式打开pathname文件，让文件与stream给定的流相连。成功则返回指向流的指针

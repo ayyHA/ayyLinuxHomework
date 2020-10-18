@@ -1,0 +1,38 @@
+  open函数：
+函数原型: |int open(const char* pathname,int flags,mode_t mode);
+	  |int open(const char* pathname,int flags);
+包含于: "fcntl.h"头文件
+功能: |打开或建立一个文件
+      |对于open函数来说，仅当创建文件时，才用到第三个参数
+参数: 1. pathname 打开或创建的文件名
+      2. flags 通过多个事先定义好的常量进行"|"运算构成该参数
+      3. mode 与rwx对应，即100-读权限 010-写权限 001-执行权限
+返回值: 新的文件描述符
+
+  creat函数：
+函数原型: int creat(const char* pathname,mode_t mode);
+包含于: "fcntl.h"头文件
+功能: 创建一个新文件，creat函数等于open(pathname,O_WRONLY|O_CREAT|O_TRUNC,mode)
+    注: creat只能以只写方式打开，不能读，读将变为乱码
+参数: 1. pathname 创建的文件名
+      2. mode 与open的mode相同
+返回值: 新的文件描述符
+
+  close函数：
+函数原型: int close(int fd);
+包含于: "unistd.h"头文件
+功能: 关闭一个已打开的文件
+参数: 需要关闭的文件描述符，从open()或creat()函数得到
+返回值: 成功返回0，失败返回-1,并置errno
+    注: 文件描述符打开后要记得关闭，不然会占用大量的内存
+
+看书笔记:
+  UNIX输入输出概念:
+程序欲操作一个文件内容前，需先在程序与文件之间建立连接或通信通道，此即为打开文件    注: 这里之的连接即是: 文件描述符(int) 或 流(FILE*)
+        FILE这个结构体含有标准I/O库管理流所需的与文件有关的所有内部状态信息，如: I/O的文件描述字、文件位置指针、I/O缓冲区大小和指针等
+
+通过流或描述字的I/O函数打开文件时，会返回对应的通道，之后按需将通道传入文件操作函数即可
+
+连接通道的关闭则通过关闭文件来终止
+
+
