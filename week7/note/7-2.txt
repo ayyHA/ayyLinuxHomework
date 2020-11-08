@@ -1,0 +1,44 @@
+env指令: 可查看全部环境变量
+
+在main函数里，命令行参数的第三个参数为: char* env[]
+
+1、读取环境变量有以下三种方法：
+	- 命令行参数：env
+	- 外部环境指针：environ (指向环境表) (extern char** environ)
+	- 函数方法：char* getenv(const char*) (写键名)
+
+2、添加或修改环境变量有以下两种方法：
+	- int putenv(char*) 这里传入的参数需要以“name=value”的形式
+	- int setenv(const char*,const char*,int) 第一个参数是环境变量名，第二个参数是环境变量值，第三个参数是重写选项，若为0，当环境变量名存在时，则不修改其值；若为非0，则修改其值
+
+
+ldd指令: 
+	ldd 文件名：显示share object(.so)库信息(ldd可以列出一个程序所需要得到的动态链接库)
+
+gcc 指令:
+	-shared: 声明共享库
+	-L ./ -l库名	增加链接库(可能有错)
+	    path 
+
+<<<----------------------------
+创建一个属于自己的动态库的过程：
+1、vim 库名.c
+2、gcc -Wall -shared 库名.c -o lib库名.so
+测试库:
+3、测试.c 文件里的 extern 声明库函数
+4、gcc -Wall 测试.c -o 测试 -L ./ -l库名
+5、sudo cp ./库.so /usr/lib
+6、./测试（可成功运行）
+---------------------------->>>
+
+
+<<<----------------------------
+动态调用库内函数：
+1、采用dlopen函数打开库，如：
+void* dlib = dlopen("库路径",RTLD_NOW);
+2、采用dlsym函数提取函数，如：
+void(*dfunc)(void)=dlsym(dlib,"函数名");
+	    此为参数
+3、通过调用dfunc()函数调用之
+4、dlclose(dlib)关闭库文件
+---------------------------->>>
