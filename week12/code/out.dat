@@ -1,0 +1,7 @@
+dup1 pid = 21580 
+argv[0] : ./dup1 
+argv[1] : hello 
+argv[2] : world 
+argv[3] : 2020 
+argv[4] : 12 
+argv[5] : 07 
