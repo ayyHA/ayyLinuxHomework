@@ -1,0 +1,38 @@
+Socket之服务与端口号
+	Internet通信域中套接字地址由IP+Port组成。
+		IP用于唯一标识网络中的一台计算机，Port用于区别同一台计算机上不同的服务进程。
+
+	大部分计算机中相同的服务程序均使用相同的端口号，这些端口号也称为保留端口号。标准端口号使得客户程序能够方便地找到任意目标计算机上的服务程序。
+	
+	在UNIX系统中，端口号是一个16位的无符号整数。每一台计算机可以有约65535个端口号。
+	UNIX/Linux系统对端口号的分配情况如下：
+		- (0,1024],1024通常被宏定义为IPPORT_RESERVED,“标准端口号”或称“保留端口”或称“特权端口”均小于IPPORT_RESERVED。保留端口这种特征用于防止普通用户从标准端口接收数据来获取他人的信息。
+		- (1024,5000],5000通常被宏定义为IPPORT_USERRESERVED,在这其中的端口号被称为“动态端口号”或“瞬间端口号”。因为这是使用者没有指定地址的套接字时，系统为它自动生成的一个东西，它们是由系统动态分配的且存在的时间很短。
+		- (5000,65535],这里的端口号是专门留给应用程序使用的。避免与其他用户正在运行的服务程序相冲突是应用自己的责任。
+
+	UNIX系统有一个记录“标准服务”的数据库。
+		此数据库由/etc/services或DNS提供。
+	定义“服务”这个结构类型是由“netdb.h”中提出“servent”结构。用于表示服务数据库的登记项的信息。
+
+	struct servent{
+		char* s_name;			// 服务进程/服务程序的正式名字；
+		char* s_aliases;		// 服务程序的别名。NULL则为结束；
+		int s_port;				// 服务程序的端口号；
+		char* s_proto;			// 与该服务一起使用的协议名。
+	};
+
+	对于标准服务，一般直接用整数来指出其端口号。
+	当对标准服务所用的端口号不确定时，可用如下函数访问服务数据库来获得相关信息：
+
+	-	struct servent* getservbyname(const char* name,const char* proto);
+	-	struct servent* getservbyport(int port,const char* proto);
+	-	void setservent(int stayopen);
+	-	struct servent* getservent();
+	-	void endservent();
+
+	getservbyname()返回使用协议proto且名为name的服务的有关信息；
+	getservbyport()返回使用协议proto且位于端口port的服务的有关信息；
+	 注：当找不到对应服务时，返回空指针。
+	
+	后面的set、get、endservent()函数同域名地址的一样(hostent),不赘述。
+

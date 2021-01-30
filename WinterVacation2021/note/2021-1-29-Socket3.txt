@@ -1,0 +1,58 @@
+Socket域名地址：
+	网络中一台计算机除了可通过IP地址来进行表示外，也可以通过“域名”来表示。
+
+	域名采用“层次结构”的方法来命名，用“.”来分隔。
+	每一个名字按在域名系统中的级别大小，从左至右通过“.”来进行连接。
+	位于最前面的名字是计算机在局域网中的“主机名”，用来表示具体的计算机，较后的名字则指明高一级的域名。
+	
+	每一个域名对应有一个IP地址。
+	每一台计算机可以有多个域名，即是同一台主机名的别名，即指向同一个域名的指针。
+
+	大部分程序都既接收点分十进制表示的IP地址，也接收域名地址。不过域名地址，最终都会转换为它所代表的IP地址。
+
+	UNIX系统内部通过一个“主机网络地址数据库”来保存主机名和主机的IP地址之间映射关系。
+		- 在Linux中，这个数据库可以通过/etc/hosts或DNS来提供。
+
+	在UNIX/Linux系统中，将域名和IP关联起来的结构类型是“hostent”。这个类型在“netdb.h”中被定义。
+
+	我们可以通过主机名或IP地址来得到本机上的这个结构，以查看本机的域名地址情况。
+
+	- struct hostent* gethostbyname(const char* name);
+		参数name可以是域名也可以是IP。若是IP，则不会查数据库，而是将name复制给hostent中的h_name参数和h_addr_list[0]。
+	- struct hostent* gethostbyaddr(const void* addr,size_t length,int type);
+		length是addr地址的大小，以字节为单位，type是指明是IPv4还是IPv6地址。即AF_INET或AF_INET6。
+	
+	这两个函数如若调用失败，返回一个空指针；若是调用成功，则返回静态分配的hostent结构。
+
+	注：hostent是用于表示主机网络地址数据库内的一个登记项。
+
+	若是查找失败，可通过h_errno来找错。但h_errno与errno不同，它是一个外部变量，须先定义。
+	- extern int h_errno;
+		这个错误码有如下参数：
+		HOST_NOT_FOUND : 无法找到主机
+		TRY_AGAIN : 前一次因DNS无法连接，可再尝试，可能成功
+		NO_RECOVERY : 遇到无法恢复的错误
+		NO_ADDRESS : 没有与此域名相对应的Internet地址
+		
+	特别注意: 当我们使用gethostbyname()来获取本机网络地址的相关信息时，有两处配置文件可以提供域名与IP地址的映射关系：
+		1. /etc/hosts 
+		2. /etc/resolv.conf
+		其中第一项用于解决常用的，我们专门放置的域名与IP的映射。
+			第二项用于访问域名服务器（第二项给出了域名服务器的IP地址）来实现域名解析。因为互联网域名系统中每一级的域名服务器负责解析本级的域名。
+		那么在进行域名解析的时候，则会存在一个先后顺序，这个先后顺序的定义由配置文件/etc/host.conf中定义。
+
+
+	当需要读多个主机的地址信息时，可以通过如下函数来实现：
+	1. void sethostent(int stayopen);
+	2. struct hostent* gethostent();
+	3. void endhostent();
+	
+	sethostent()函数用于打开主机网络地址数据库，
+		若stayopen为0，则采取网络协议UDP，与DNS建立临时而短暂的连接；
+		若stayopen为1，则采取网络协议TCP，与DNS建立稳定且有保证的连接，且之后调用gethostent、gethostbyaddr、gethostentbyname这些函数不会关闭数据库。
+	gethostent()函数用于返回主机网络地址数据库中的下一个登记项，若无则返回空指针。
+	endhostent()函数用于关闭主机网络地址数据库，即关闭TCP的连接。
+		
+			
+
+

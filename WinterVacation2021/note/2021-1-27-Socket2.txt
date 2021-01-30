@@ -1,0 +1,48 @@
+Socket地址结构:
+	通过socket()函数创建的只是本地上的一个开放资源，若希望别的进程、甚至是别的计算机上的进程能与调用了socket()函数的这个进程通过这个套接字通信，则需要有对应的“地址信息”
+
+	套接字的地址是根据通信域domin而定的。
+	前面说过domin有三个取值：AF_UNIX、AF_INET、AP_INET6，在讨论套接字的地址信息时，我们将它们划分为UNIX和Internet两类。
+
+	UNIX通信域下：套接字的地址用“文件路径名”来命名。这个作为套接字地址的文件名被使用需要对目录具有许可权，对文件需要具有读的权限。这些被用作通信的文件名常放在/tmp目录中。
+	Internet通信域下，套接字的地址由”IP地址和端口号”组成。
+
+	IP地址:根据所含字节数不同分为IPv4地址和IPv6地址。
+		IPv4：IP地址是4字节的值，每一个字节代表一个十进制数即[0,255],数与数之间通过小数点“.”来隔开，这种表示方式被称为点分十进制。
+		IPv6：IP地址是128位的值，128位分为8个16位的部分，每个部分都是16位，且用十六进制表示，部分与部分用冒号“:”隔开来。连续为0的地址段用“::”。
+			  从兼容的角度出发，IPv6可以表示为混合的形式，即高96位为IPv6的表示形式，低32位为IPv4的表示形式。
+
+	IP地址保留：
+		在<netinet/in.h>中定义了特殊IP地址的宏符号名，常用有：
+			INADDR_LOOPBACK：回送地址，即127.0.0.1。回送地址作为目的地址时将导致数据直接返回给本机。
+							 可用于本机网络协议的测试和本地进程间的通信。
+			INADDR_ANY：通配名。表示任何进入本机的地址。
+			INADDR_BROADCAST：广播地址，即255.255.255.255。用于网络内部广播。
+
+	IP地址表示：
+		在<netinet/in.h>中定义了IPv4地址和IPv6地址的数据结构(装二进制数用的)：
+		分别如此表示：in_addr和in6_addr
+			typedef uint32_t in_addr_t;
+			struct in_addr {in_addr_t s_addr;};			/* 32位IPv4 */
+			struct in6_addr {uint8 s6_addr[16];};		/* 128位IPv6 */
+	
+	IPv4和IPv6转换为二进制数的函数：
+		古老的方法：
+			说它古老，是因为只针对IPv4。下面的a-ascii;n-numeric
+			int inet_aton(const char* name,struct in_addr* addr);	/* 点分十进制表示的IP转换为二进制  */
+			char* inet_ntoa(struct in_addr inaddr);					/* 二进制直接转换为字串形式的IP，于堆中返回其地址 */
+			
+		在用了IPv6的地址结构后，新定义的方法：
+			p-presentation;n-numeric
+			int inet_pton(int family,const char* nameptr,void* addrptr);
+			const char* inet_ntop(int family,void* addrptr,char* nameptr,size_t len);
+			函数意思同上，但family取值用于标识是IPv4和IPv6地址。family取值可分为：AF_INET 和 AF_INET6。
+			参数nameptr所指向的字符串可以是IPv4或IPv6地址，具体根据family取值而区分。
+			参数addrptr或指向in_addr的结构，或指向in6_addr的结构。
+			参数len用于防止转换成的IP字串超越应用分配的存储空间。系统定义宏常数取值以指明空间大小。有INET_ADDRSTRLEN 和 INET6_ADDRSTRLEN
+			
+														
+		
+	
+	
+	
