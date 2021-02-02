@@ -18,6 +18,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <sys/utsname.h>
 #define SERVPORT 3333
 #define MAXDATASIZE 100
 

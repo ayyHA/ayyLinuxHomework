@@ -1,2 +1,44 @@
 Socket地址数据结构：
+	我们已知装载IP地址的结构类型：in_addr、in6_addr；
+		已知根据主机名获得字串形式的IP的方法：gethostbyname() + inet_ntop()
+		也知道如何将字串形式的IP转为32位或128位的数值形式的方法：inet_pton()
+		也知道了如何获得端口号的方法：getservbyname()
+	由上述方法我们已经可以得出IP+Port，即通信域为Internet的套接字的地址的表示形式。
+
+	不难看出，根据套接字通信域的不同，其地址形式也会发生变化，故他们各自的数据结构也因此不同。
+
+	- 当通信域为AF_UNIX时，套接字地址结构为：
+		struct sockaddr_un{
+			sa_family_t sun_family;
+			char sun_path[];
+		};	
+
+	- 当通信域为AF_INET时，套接字地址结构为：
+		struct sockaddr_in{
+			sa_family_t sin_family;
+			in_port_t sin_port;
+			struct in_addr sin_addr;
+			unsigned char sin_zero[8];
+		};
+
+	- 当通信域为AF_INET6时，套接字地址结构为：
+		struct sockaddr_in6{
+			sa_family_t sin6_family;
+			in_port_t sin6_port;
+			uint32_t sin6_flowinfo;
+			struct in6_addr sin6_addr;
+		};
+
+	不难看出，每一种通信域套接字地址结构中的第一个成员都相同，它们指明套接字的“地址族”。类型sa_family_t,是由unsigned short int 重定义而来的。
+	对于AF_UNIX系统来说，即sockaddr_un结构的第二个成员sun_path给出UNIX文件的路径名，它不能与文件系统中其他文件同名。由sun_path[]所命名的文件是在bind()时创建的，此时内核在文件系统中为该文件去分配一个inode。如果这个inode没有去分配，它将一直保存在文件系统中，即使套接字关闭也依旧存在。因此，当关闭一个文件名套接字后，还应当用unlink()或remove()从文件系统删除其文件名。
+	对于AF_INET和AF_INET6系统来说，其结构均定义在“netinet/in.h”中，其中in_port_t类型存储的是端口号，sin_addr、sin6_addr存储的是对应的ip。对IPv4的地址结构来说，sin_zero这一数组暂未使用；对IPv6的地址结构来说，sin6_flowinfo是IPv6协议为处理实时服务引入的。
+
+
+	通过上面对不同通信域的套接字地址结构的解释，可知在使用不同通信域时，所采取的地址结构不同。为了便于统一管理（统一接口），推出了sockaddr这个结构体，做法是让与套接字地址结构相关的函数都使用指向结构类型为sockaddr的指针为参数。
+	struct sockaddr{
+		sa_family_t sa_family;			/* 地址族，指明套接字遵循的地址格式 */
+		char sa_data[];					/* 套接字的实际地址数据 */
+	};
+	
+	
 	
