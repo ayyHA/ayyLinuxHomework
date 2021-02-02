@@ -1,0 +1,23 @@
+  memset函数
+函数原型：void* memset(void* str,int c,size_t n);
+函数说明：str指向要填充的内存块，c是内存块统一被填充的值，n是要被填充的内存区域的大小；该函数返回一个指向str的指针
+
+  fgets函数
+函数原型：char* fgets(char* s,int count,FILE* stream);
+函数说明：从stream指定的流中连续读字符至读到'\n'或读到(count-1)个字符，
+
+  fwrite函数
+
+  fprintf函数
+
+  strlen函数
+
+  fdopen函数
+
+  fputs函数
+
+  int argc参数
+
+  char* argv[]参数
+
+

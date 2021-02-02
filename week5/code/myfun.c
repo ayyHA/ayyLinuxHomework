@@ -202,6 +202,6 @@ void randdat(){
 		sscanf(userList[i]->tel,"%3d %3d %3d %d",&tel1,&tel2,&tel3,&tel4);//tel
 		sprintf(userList[i]->tel,"%d,%d,%d,%d",tel1,tel2,tel3,tel4);
 	}
-	printf("\n RANDDAT:\n");
+	printf("\n\n RANDDAT:\n");
 //	output();
 }
